@@ -2,6 +2,10 @@ name: test-and-build
 
 on:
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
   push:
     branches:
       - main
@@ -12,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
       - uses: actions/setup-go@v5
         with:
           go-version: 1.22.x
@@ -28,6 +34,8 @@ jobs:
       checks: write  # allow the action to annotate code in the PR
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
       - name: golangci-lint
         uses: golangci/golangci-lint-action@a4f60bb28d35aeee14e6880718e0c85ff1882e64 # v6.0.1
         with:
@@ -38,6 +46,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
       - uses: actions/setup-go@v5
         with:
           go-version: 1.22.x
