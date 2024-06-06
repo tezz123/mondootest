@@ -68,6 +68,8 @@ jobs:
     name: Publish the artifact on GitHub Release
     runs-on: ubuntu-latest
     needs:
+      - gosec
+      - lint
       - build
     permissions:
       contents: write
