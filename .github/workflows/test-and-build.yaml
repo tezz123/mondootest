@@ -1,0 +1,45 @@
+name: test-and-build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  gosec:
+    name: Gosec Security Scanner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.22.x
+      - uses: securego/gosec@v2.20.0
+        with:
+          args: -fmt=json ./...
+
+  lint:
+    name: Golangci Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: write  # allow the action to annotate code in the PR
+    steps:
+      - uses: actions/checkout@v4
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@a4f60bb28d35aeee14e6880718e0c85ff1882e64 # v6.0.1
+        with:
+          args: --verbose
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.22.x
+      - name: Build
+        run: go build -v ./...
