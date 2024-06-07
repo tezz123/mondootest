@@ -110,6 +110,6 @@ jobs:
              workflow_id: 'docker.yaml',
              ref: 'main',
              inputs: {
-              tag: ${{ steps.ghrelease.outputs.id }}
+              tag: ${{ github.ref }}
              }
             })
