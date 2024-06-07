@@ -110,6 +110,6 @@ jobs:
              workflow_id: 'docker.yaml',
              ref: 'main',
              inputs: {
-              tag: ${{ github.ref_name }}
-             }
+              tag: "${{ github.ref_name }}"
+             },
             })
