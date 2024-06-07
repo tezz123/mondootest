@@ -48,6 +48,10 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux]
+        goarch: [386, amd64]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -56,12 +60,14 @@ jobs:
         with:
           go-version: 1.22.x
       - name: Build
-        run: go build -v ./...
+        run: |
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o bin/mondoohelloworld-${{ matrix.goos }}-${{ matrix.goarch }} -v ./...
+          tar -C out -czf "bin/mondoohelloworld-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz" bin/mondoohelloworld-${{ matrix.goos }}-${{ matrix.goarch }}
       - name: Upload binary as GH artifact
         uses: actions/upload-artifact@v4
         with:
-          name: webserver-binary
-          path: mondoohelloworld
+          name: webserver-binary-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: bin/mondoohelloworld-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
           retention-days: 7
 
   publish:
@@ -84,4 +90,4 @@ jobs:
         uses: softprops/action-gh-release@69320dbe05506a9a39fc8ae11030b214ec2d1f87  # 2.0.5
         with:
           files: |
-            artifacts/webserver-binary/mondoohelloworld
+            artifacts/webserver-binary/mondoohelloworld*
