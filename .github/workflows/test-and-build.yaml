@@ -71,6 +71,7 @@ jobs:
           retention-days: 7
 
   publish:
+    if: startsWith(github.ref, 'refs/tags/') && github.event.action == 'published'
     name: Publish the artifact on GitHub Release
     runs-on: ubuntu-latest
     needs:
@@ -81,22 +82,27 @@ jobs:
       contents: write
     steps:
       - name: Download GH Artifact
-        if: startsWith(github.ref, 'refs/tags/') && github.event.action == 'published'
         uses: actions/download-artifact@v4
         with:
           path: artifacts
       - name: Push artifact to GH Release
         id: ghrelease
-        if: startsWith(github.ref, 'refs/tags/') && github.event.action == 'published'
         uses: softprops/action-gh-release@69320dbe05506a9a39fc8ae11030b214ec2d1f87  # 2.0.5
         with:
           fail_on_unmatched_files: true
           files: |
             artifacts/webserver-binary*/mondoohelloworld*
+      - name: Generate a token
+        id: generate_token
+        uses: actions/create-github-app-token@v1.10.1
+        with:
+          app_id: ${{ vars.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PEM }}
+          owner: ${{ github.repository_owner }}
       - name: Trigger Docker build and push
-        if: startsWith(github.ref, 'refs/tags/') && github.event.action == 'published'
         uses: actions/github-script@v6
         with:
+          github-token: ${{ steps.generate_token.outputs.token }}
           script: |
             await github.rest.actions.createWorkflowDispatch({
              owner: 'tezz123',
