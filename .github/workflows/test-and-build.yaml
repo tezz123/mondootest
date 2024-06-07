@@ -86,6 +86,7 @@ jobs:
         with:
           path: artifacts
       - name: Push artifact to GH Release
+        id: ghrelease
         if: startsWith(github.ref, 'refs/tags/') && github.event.action == 'published'
         uses: softprops/action-gh-release@69320dbe05506a9a39fc8ae11030b214ec2d1f87  # 2.0.5
         with:
@@ -101,5 +102,8 @@ jobs:
              owner: 'tezz123',
              repo: 'mondootest2',
              workflow_id: 'docker.yaml',
-             ref: 'main'
+             ref: 'main',
+             inputs: {
+              tag: ${{ steps.ghrelease.outputs.id }}
+             }
             })
