@@ -89,5 +89,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/') && github.event.action == 'published'
         uses: softprops/action-gh-release@69320dbe05506a9a39fc8ae11030b214ec2d1f87  # 2.0.5
         with:
+          fail_on_unmatched_files: true
           files: |
-            artifacts/webserver-binary/mondoohelloworld*
+            artifacts/webserver-binary*/mondoohelloworld*
