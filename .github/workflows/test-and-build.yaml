@@ -92,3 +92,14 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             artifacts/webserver-binary*/mondoohelloworld*
+      - name: Trigger Docker build and push
+        if: startsWith(github.ref, 'refs/tags/') && github.event.action == 'published'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+             owner: 'tezz123',
+             repo: 'mondootest2',
+             workflow_id: 'docker.yaml',
+             ref: 'main'
+            })
