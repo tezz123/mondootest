@@ -62,7 +62,7 @@ jobs:
       - name: Build
         run: |
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o bin/mondoohelloworld-${{ matrix.goos }}-${{ matrix.goarch }} -v ./...
-          tar -C out -czf "bin/mondoohelloworld-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz" bin/mondoohelloworld-${{ matrix.goos }}-${{ matrix.goarch }}
+          tar -czf "bin/mondoohelloworld-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz" bin/mondoohelloworld-${{ matrix.goos }}-${{ matrix.goarch }}
       - name: Upload binary as GH artifact
         uses: actions/upload-artifact@v4
         with:
